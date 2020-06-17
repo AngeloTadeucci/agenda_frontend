@@ -19,25 +19,25 @@ const Home: React.FC = () => {
               <span>Contatos</span>
             </li>
           </Link>
-          <Link to="/locais">
+          <Link to="/locais/list">
             <li>
               <MdPlace size={80} color="#6C6C80" />
               <span>Locais</span>
             </li>
           </Link>
-          <Link to="/eventos">
+          <Link to="/eventos/list">
             <li>
               <MdEvent size={80} color="#6C6C80" />
               <span>Eventos</span>
             </li>
           </Link>
-          <Link to="/tiposContato">
+          <Link to="/tiposContato/list">
             <li>
               <RiContactsLine size={80} color="#6C6C80" />
               <span>Tipos de Contato</span>
             </li>
           </Link>
-          <Link to="/participantes">
+          <Link to="/participantes/list">
             <li>
               <IoMdContacts size={80} color="#6C6C80" />
               <span>Participantes de evento</span>
