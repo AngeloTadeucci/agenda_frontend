@@ -1,7 +1,7 @@
 :root {
   --primary-color: #34cb79;
   --title-color: #322153;
-  --text-color: #6c6c80;
+  --text-color: #000000;
 }
 
 * {
@@ -193,9 +193,12 @@ h6 {
   font-size: 16px;
   border: 0;
   align-self: flex-end;
-  margin-top: 40px;
+  /* margin-top: 20px; */
   transition: background-color 0.2s;
   cursor: pointer;
+}
+#page-create-point form th {
+  padding: 5px
 }
 
 #page-create-point form button:hover {
@@ -241,4 +244,12 @@ h6 {
 }
 th > button {
   max-width: 80px;
+}
+
+
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: none;
 }

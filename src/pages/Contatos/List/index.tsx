@@ -2,6 +2,7 @@ import React, { useState, useEffect, FormEvent } from "react";
 import api from "../../../services/api";
 import { Link } from "react-router-dom";
 import { AiFillCaretLeft } from "react-icons/ai";
+import { Spinner } from "react-bootstrap";
 
 interface Contato {
   idcontato: number;
@@ -16,11 +17,11 @@ const ListContatos: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [contatos, setContatos] = useState([] as Contato[]);
 
-  const [nome, setNome] = useState('')
-  const [email, setEmail] = useState('')
-  const [telefone, setTelefone] = useState('')
-  const [idTipoContato, setIdTipoContato] = useState(0)
-  const [idLocal, setIdLocal] = useState(0)
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [idTipoContato, setIdTipoContato] = useState(0);
+  const [idLocal, setIdLocal] = useState(0);
 
   async function getContato() {
     const response = await api.get("/contato");
@@ -35,12 +36,11 @@ const ListContatos: React.FC = () => {
   async function deleteContato(e: FormEvent, idContato: number, nome: string) {
     e.preventDefault();
     const response = await api.delete(`/contato/${idContato}`);
-    console.log(response)
     if (response.data.message !== "Erro") {
       alert(`Contato ${nome} deletado com sucesso.`);
-      window.location.reload(true)
+      window.location.reload(true);
     } else {
-      alert(`Erro ao exluir contato.`);
+      alert(`Erro ao exluir contato.\n${response.data.error.detail}`);
     }
   }
 
@@ -51,14 +51,13 @@ const ListContatos: React.FC = () => {
       email,
       telefone,
       idTipoContato,
-      idLocal
+      idLocal,
     });
-    console.log(response)
     if (response.data.message !== "Erro") {
       alert(`Contato adicionado: ${nome}`);
-      window.location.reload(true)
+      window.location.reload(true);
     } else {
-      alert(`Erro ao adicionar contato`);
+      alert(`Erro ao adicionar contato.\n${response.data.error.detail}`);
     }
   }
 
@@ -115,8 +114,9 @@ const ListContatos: React.FC = () => {
           <div>
             <br />
             <br />
-            <br />
-            <p>Loading..</p>
+            <Spinner animation="border" variant="dark" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
           </div>
         )}
         <br />
@@ -139,17 +139,32 @@ const ListContatos: React.FC = () => {
         <div className="field-group">
           <div className="field">
             <label htmlFor="Telefone">Telefone</label>
-            <input onChange={(text) => setTelefone(text.currentTarget.value)} type="text" name="telefone" id="telefone" />
+            <input
+              onChange={(text) => setTelefone(text.currentTarget.value)}
+              type="text"
+              name="telefone"
+              id="telefone"
+            />
           </div>
           <div className="field">
             <label htmlFor="idtipocontato">ID Tipo Contato</label>
-            <input onChange={(text) => setIdTipoContato(Number(text.currentTarget.value))} type="text" name="idtipocontato" id="idtipocontato" />
+            <input
+              onChange={(text) => setIdTipoContato(Number(text.currentTarget.value))}
+              type="text"
+              name="idtipocontato"
+              id="idtipocontato"
+            />
           </div>
         </div>
         <div className="field-group">
           <div className="field">
             <label htmlFor="idlocal">ID Local</label>
-            <input onChange={(text) => setIdLocal(Number(text.currentTarget.value))} type="text" name="idlocal" id="idlocal" />
+            <input
+              onChange={(text) => setIdLocal(Number(text.currentTarget.value))}
+              type="text"
+              name="idlocal"
+              id="idlocal"
+            />
           </div>
         </div>
         <button onClick={(e) => insertContato(e)}>Cadastrar</button>
