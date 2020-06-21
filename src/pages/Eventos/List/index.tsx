@@ -3,6 +3,7 @@ import api from "../../../services/api";
 import { Link } from "react-router-dom";
 import { AiFillCaretLeft } from "react-icons/ai";
 import { Spinner } from "react-bootstrap";
+import Button from 'react-bootstrap/Button'
 
 interface Evento {
   idevento: number;
@@ -32,32 +33,34 @@ const ListEventos: React.FC = () => {
   const [idLocal, setIdLocal] = useState("");
   const [qtdParticipantes, setQtdParticipantes] = useState("");
   const [locais, setLocal] = useState([] as Local[]);
+  const date = new Date();
 
   async function getEvento() {
     const response = await api.get("/evento");
     setEventos(response.data);
-    setLoading(false);
   }
 
   async function getLocal() {
     const response = await api.get("/local");
     const locais = response.data;
     setLocal(locais);
-  }
-
-  async function deleteEvento(e: FormEvent, idEvento: number, nome: string) {
-    e.preventDefault();
-    const response = await api.delete(`/evento/${idEvento}`);
-    if (response.data.message !== "Erro") {
-      alert(`Evento ${nome} deletado com sucesso.`);
-      window.location.reload(true);
-    } else {
-      alert(`Erro ao exluir evento.\n${response.data.error.detail}`);
-    }
+    setLoading(false);
   }
 
   async function insertEvento(e: FormEvent) {
     e.preventDefault();
+    if (nome === "") {
+      return alert(`Dê um nome ao evento.`);
+    }
+    if (dataHora === "") {
+      return alert(`Escolha uma hora e data para o evento.`);
+    }
+    if (idLocal === "" || idLocal==="nulo") {
+      return alert(`Escolha um local!`);
+    }
+    if (qtdParticipantes === "") {
+      return alert(`Defina uma quantidade de participantes!`);
+    }
     const response = await api.post("/evento", {
       nome,
       dataHora,
@@ -92,7 +95,6 @@ const ListEventos: React.FC = () => {
               <table>
                 <tbody>
                   <tr>
-                    <th>ID</th>
                     <th>Nome</th>
                     <th>Data / Hora</th>
                     <th>ID Local</th>
@@ -101,19 +103,16 @@ const ListEventos: React.FC = () => {
                   </tr>
                   {eventos.map((evento) => (
                     <tr key={evento.idevento}>
-                      <th>{evento.idevento}</th>
                       <th>{evento.nome}</th>
                       <th>{formatDate(evento.datahora)}</th>
-                      <th>{evento.idlocal}</th>
+                      <th>{locais.map((local)=>(
+                          local.id === evento.idlocal ? (`${local.endereco} - ${local.numero}`) : null
+                      ))}</th>
                       <th>{evento.qtdparticipantes}</th>
                       <th>
-                        <button
-                          onClick={(e) => {
-                            deleteEvento(e, evento.idevento, evento.nome);
-                          }}
-                        >
-                          Apagar
-                        </button>
+                        <Link to={`/eventos/edit/?id=${evento.idevento}`}>
+                          <Button variant="danger" >Editar</Button>
+                        </Link>
                       </th>
                     </tr>
                   ))}
@@ -135,23 +134,28 @@ const ListEventos: React.FC = () => {
         <br />
         <br />
         <br />
+        <div>
         <h2>Cadastrar:</h2>
         <br />
         <br />
         <div className="field-group">
           <div className="field">
             <label htmlFor="Nome">Nome do evento</label>
-            <input onChange={(text) => setNome(text.currentTarget.value)} type="text" name="nome" id="nome" />
+            <input onChange={(text) => setNome(text.currentTarget.value.trim())} type="text" name="nome" id="nome" />
           </div>
         </div>
         <div className="field-group">
           <div className="field">
             <label htmlFor="data">Data / Hora</label>
-            <input onChange={(text) => setDataHora(text.currentTarget.value)} type="text" name="hora" id="hora" />
+            <input onChange={(text) => setDataHora(text.currentTarget.value.trim())} type="datetime-local"
+            min={date.toISOString().substr(0, date.toISOString().length-8)}
+             pattern="[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}"
+             name="hora" id="hora" />
           </div>
           <div className="field">
             <label htmlFor="Local">Local</label>
-            <select onChange={(text) => setIdLocal(text.currentTarget.value)} name="cidades" id="cidades">
+            <select defaultValue="DEFAULT" onChange={(text) => setIdLocal(text.currentTarget.value.trim())} name="cidades" id="cidades">
+              <option key="DEFAULT" value="nulo">-- Escolha um local --</option>
               {locais.map((local) => (
                 <option key={local.id} value={local.id}>
                   {local.endereco}, {local.numero} - {local.cidade}/{local.estado}
@@ -164,14 +168,15 @@ const ListEventos: React.FC = () => {
           <div className="field">
             <label htmlFor="participantes">Participantes</label>
             <input
-              onChange={(text) => setQtdParticipantes(text.currentTarget.value)}
+              onChange={(text) => setQtdParticipantes(text.currentTarget.value.trim())}
               type="text"
               name="participantes"
               id="participantes"
             />
           </div>
         </div>
-        <button onClick={(e) => insertEvento(e)}>Cadastrar</button>
+        <Button variant="success" onClick={(e: React.FormEvent<Element>) => insertEvento(e)}>Cadastrar</Button>
+        </div>
       </form>
     </div>
   );

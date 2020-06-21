@@ -2,7 +2,7 @@ import React, { useState, useEffect, FormEvent } from "react";
 import api from "../../../services/api";
 import { Link } from "react-router-dom";
 import { AiFillCaretLeft } from "react-icons/ai";
-import { Spinner } from "react-bootstrap";
+import { Spinner, Button } from "react-bootstrap";
 import axios from "axios";
 
 interface Local {
@@ -45,19 +45,26 @@ const ListLocais: React.FC = () => {
     setLoading(false);
   }
 
-  async function deleteLocal(e: FormEvent, pId: number, pEndereco: string) {
-    e.preventDefault();
-    const response = await api.delete(`/local/${pId}`);
-    if (response.data.message !== "Erro") {
-      alert(`Contato ${pEndereco} deletado com sucesso`);
-      window.location.reload(true);
-    } else {
-      alert(`Erro ao exluir participante do evento.\n${response.data.error.detail}`);
-    }
-  }
-
   async function insertLocal(e: FormEvent) {
     e.preventDefault();
+    if (endereco === "") {
+      return alert("Digite um endereço.");
+    }
+    if (numero === "") {
+      return alert("Digite um número.");
+    }
+    if (bairro === "") {
+      return alert("Digite um bairro.");
+    }
+    if (cep === "") {
+      return alert("Digite um CEP.");
+    }
+    if (estado === null || estado === "") {
+      return alert("Escolha um estado.");
+    }
+    if (cidade === null || cidade === "") {
+      return alert("Escolha uma cidade.");
+    }
     const response = await api.post("/local", {
       endereco,
       numero,
@@ -117,7 +124,6 @@ const ListLocais: React.FC = () => {
               <table>
                 <tbody>
                   <tr>
-                    <th>ID</th>
                     <th>Endereço</th>
                     <th>Número</th>
                     <th>Bairro</th>
@@ -129,7 +135,6 @@ const ListLocais: React.FC = () => {
                   </tr>
                   {locais.map((local) => (
                     <tr key={local.id}>
-                      <th>{local.id}</th>
                       <th>{local.endereco}</th>
                       <th>{local.numero}</th>
                       <th>{local.bairro}</th>
@@ -140,13 +145,9 @@ const ListLocais: React.FC = () => {
                       <th>{local.estado}</th>
                       <th>{local.cidade}</th>
                       <th>
-                        <button
-                          onClick={(e) => {
-                            deleteLocal(e, local.id, local.endereco);
-                          }}
-                        >
-                          Apagar
-                        </button>
+                        <Link to={`/locais/edit/?id=${local.id}`}>
+                          <Button variant="danger">Editar</Button>
+                        </Link>
                       </th>
                     </tr>
                   ))}
@@ -176,7 +177,7 @@ const ListLocais: React.FC = () => {
           <div className="field">
             <label htmlFor="endereco">Endereço</label>
             <input
-              onChange={(text) => setEndereco(text.currentTarget.value)}
+              onChange={(text) => setEndereco(text.currentTarget.value.trim())}
               type="text"
               name="endereco"
               id="endereco"
@@ -186,22 +187,32 @@ const ListLocais: React.FC = () => {
         <div className="field-group">
           <div className="field">
             <label htmlFor="numero">Número</label>
-            <input onChange={(text) => setNumero(text.currentTarget.value)} type="text" name="numero" id="numero" />
+            <input
+              onChange={(text) => setNumero(text.currentTarget.value.trim())}
+              type="text"
+              name="numero"
+              id="numero"
+            />
           </div>
           <div className="field">
             <label htmlFor="bairro">Bairro</label>
-            <input onChange={(text) => setBairro(text.currentTarget.value)} type="text" name="bairro" id="bairro" />
+            <input
+              onChange={(text) => setBairro(text.currentTarget.value.trim())}
+              type="text"
+              name="bairro"
+              id="bairro"
+            />
           </div>
         </div>
         <div className="field-group">
           <div className="field">
             <label htmlFor="cep">CEP</label>
-            <input onChange={(text) => setCep(text.currentTarget.value)} type="text" name="cep" id="cep" />
+            <input onChange={(text) => setCep(text.currentTarget.value.trim())} type="text" name="cep" id="cep" />
           </div>
           <div className="field">
             <label htmlFor="complemento">Complemento</label>
             <input
-              onChange={(text) => setComplemento(text.currentTarget.value)}
+              onChange={(text) => setComplemento(text.currentTarget.value.trim())}
               type="text"
               name="complemento"
               id="complemento"
@@ -213,11 +224,14 @@ const ListLocais: React.FC = () => {
             <label htmlFor="estado">Estado</label>
             <select
               onChange={(text) => {
-                setEstado(text.currentTarget.value);
+                setEstado(text.currentTarget.value.trim());
+                setCidade("")
               }}
+              defaultValue=""
               name="estados"
               id="estados"
             >
+              <option key="DEFAULT" value="">-- Escolha um estado --</option>
               {ufs.map((estado) => (
                 <option key={estado} value={estado}>
                   {estado}
@@ -227,20 +241,29 @@ const ListLocais: React.FC = () => {
           </div>
           <div className="field">
             <label htmlFor="cidade">Cidade</label>
-            <select onChange={(text) => setCidade(text.currentTarget.value)} name="cidades" id="cidades">
+            <select onChange={(text) => setCidade(text.currentTarget.value.trim())} defaultValue="" name="cidades" id="cidades">
               {estado == null || estado === "" ? (
-                <option value="empty">Escolha um estado</option>
+                <option key="DEFAULT" value="">-- Escolha um estado --</option>
               ) : (
-                cities.map((cidade) => (
-                  <option key={cidade} value={cidade}>
-                    {cidade}
-                  </option>
-                ))
+                <option key="DEFAULT" value="">
+                  -- Escolha uma cidade --
+                </option>
               )}
+              {estado == null || estado === ""
+                ? null
+                : cities.map((cidade) => (
+                    <option key={cidade} value={cidade}>
+                      {cidade}
+                    </option>
+                  ))}
             </select>
           </div>
         </div>
-        <button onClick={(e) => insertLocal(e)}>Cadastrar</button>
+        <div>
+          <Button variant="success" onClick={(e: React.FormEvent<Element>) => insertLocal(e)}>
+            Cadastrar
+          </Button>
+        </div>
       </form>
     </div>
   );

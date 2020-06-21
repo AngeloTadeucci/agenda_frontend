@@ -2,15 +2,31 @@ import React, { useState, useEffect, FormEvent } from "react";
 import api from "../../../services/api";
 import { Link } from "react-router-dom";
 import { AiFillCaretLeft } from "react-icons/ai";
-import { Spinner } from "react-bootstrap";
+import { Spinner, Button } from "react-bootstrap";
 
 interface Contato {
   idcontato: number;
   nome: string;
   email: string;
-  telefone: number;
+  telefone: string;
   idlocal: number;
   idtipocontato: number;
+}
+
+interface TipoContato {
+  id: number;
+  descricao: string;
+}
+
+interface Local {
+  id: number;
+  cep: string;
+  endereco: string;
+  numero: number;
+  bairro: string;
+  complemento: string;
+  cidade: string;
+  estado: string;
 }
 
 const ListContatos: React.FC = () => {
@@ -23,26 +39,30 @@ const ListContatos: React.FC = () => {
   const [idTipoContato, setIdTipoContato] = useState(0);
   const [idLocal, setIdLocal] = useState(0);
 
+  const [tipoContato, setTipoContato] = useState([] as TipoContato[])
+  const [locais, setLocais] = useState([] as Local[])
+
   async function getContato() {
     const response = await api.get("/contato");
     setContatos(response.data);
+  }
+
+  async function getLocais() {
+    const response = await api.get("/local");
+    setLocais(response.data);
+  }
+
+  async function getTipoContato() {
+    const response = await api.get("/tipocontato");
+    setTipoContato(response.data);
     setLoading(false);
   }
 
   useEffect(() => {
     getContato();
+    getTipoContato();
+    getLocais();
   }, []);
-
-  async function deleteContato(e: FormEvent, idContato: number, nome: string) {
-    e.preventDefault();
-    const response = await api.delete(`/contato/${idContato}`);
-    if (response.data.message !== "Erro") {
-      alert(`Contato ${nome} deletado com sucesso.`);
-      window.location.reload(true);
-    } else {
-      alert(`Erro ao exluir contato.\n${response.data.error.detail}`);
-    }
-  }
 
   async function insertContato(e: FormEvent) {
     e.preventDefault();
@@ -77,30 +97,30 @@ const ListContatos: React.FC = () => {
               <table>
                 <tbody>
                   <tr>
-                    <th>ID</th>
                     <th>Nome</th>
                     <th>E-Mail</th>
                     <th>Telefone</th>
-                    <th>ID Local</th>
-                    <th>ID TipoContato</th>
+                    <th>Local</th>
+                    <th>TipoContato</th>
                     <th></th>
                   </tr>
                   {contatos.map((contato) => (
                     <tr key={contato.idcontato}>
-                      <th>{contato.idcontato}</th>
                       <th>{contato.nome}</th>
                       <th>{contato.email}</th>
                       <th>{contato.telefone}</th>
-                      <th>{contato.idlocal}</th>
-                      <th>{contato.idtipocontato}</th>
+                      <th>{locais.map((local)=> (
+                        contato.idlocal === local.id ? (`${local.endereco}, ${local.numero} - ${local.cidade} / ${local.estado}`) : null
+                      ))}</th>
+                      <th>{tipoContato.map((tipo)=> (
+                        contato.idtipocontato === tipo.id ? (`${tipo.descricao}`) : null
+                      ))}</th>
                       <th>
-                        <button
-                          onClick={(e) => {
-                            deleteContato(e, contato.idcontato, contato.nome);
-                          }}
-                        >
-                          Apagar
-                        </button>
+                        <Link to={`/contatos/edit/?id=${contato.idcontato}`}>
+                        <Button variant="danger">
+                          Editar
+                        </Button>
+                        </Link>
                       </th>
                     </tr>
                   ))}
@@ -129,45 +149,51 @@ const ListContatos: React.FC = () => {
         <div className="field-group">
           <div className="field">
             <label htmlFor="Nome">Nome</label>
-            <input onChange={(text) => setNome(text.currentTarget.value)} type="text" name="nome" id="nome" />
+            <input onChange={(text) => setNome(text.currentTarget.value.trim())} type="text" name="nome" id="nome" />
           </div>
           <div className="field">
             <label htmlFor="Email">E-Mail</label>
-            <input onChange={(text) => setEmail(text.currentTarget.value)} type="text" name="email" id="email" />
+            <input onChange={(text) => setEmail(text.currentTarget.value.trim())} type="text" name="email" id="email" />
           </div>
         </div>
         <div className="field-group">
+        <div className="field">
+            <label htmlFor="idlocal">Local</label>
+            <select defaultValue="DEFAULT" onChange={(text) => setIdLocal(Number(text.currentTarget.value.trim()))} name="idlocal" id="idlocal">
+              <option key="DEFAULT" value="nulo">-- Escolha um local --</option>
+              {locais.map((local) => (
+                <option key={local.id} value={local.id}>
+                  {local.endereco}, {local.numero} - {local.cidade}/{local.estado}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="field">
+            <label htmlFor="idtipocontato">Tipo Contato</label>
+            <select defaultValue="DEFAULT" onChange={(text)=> setIdTipoContato(Number(text.currentTarget.value.trim()))} name="idtipocontato" id="idtipocontato">
+            <option key="DEFAULT" value="nulo">-- Escolha um tipo de contato --</option>
+            {tipoContato.map((tipo) => (
+              <option key={tipo.id} value={tipo.id}>
+                {tipo.descricao}
+              </option>
+            ))}
+            </select>
+          </div>
+        </div>
+        <div className="field-group">
+        <div className="field">
             <label htmlFor="Telefone">Telefone</label>
             <input
-              onChange={(text) => setTelefone(text.currentTarget.value)}
+              onChange={(text) => setTelefone(text.currentTarget.value.trim())}
               type="text"
               name="telefone"
               id="telefone"
             />
           </div>
-          <div className="field">
-            <label htmlFor="idtipocontato">ID Tipo Contato</label>
-            <input
-              onChange={(text) => setIdTipoContato(Number(text.currentTarget.value))}
-              type="text"
-              name="idtipocontato"
-              id="idtipocontato"
-            />
-          </div>
         </div>
-        <div className="field-group">
-          <div className="field">
-            <label htmlFor="idlocal">ID Local</label>
-            <input
-              onChange={(text) => setIdLocal(Number(text.currentTarget.value))}
-              type="text"
-              name="idlocal"
-              id="idlocal"
-            />
-          </div>
+        <div>
+        <Button variant="success"onClick={(e: React.FormEvent<Element>) => insertContato(e)}>Cadastrar</Button>
         </div>
-        <button onClick={(e) => insertContato(e)}>Cadastrar</button>
       </form>
     </div>
   );
