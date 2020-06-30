@@ -23,6 +23,6 @@
     "src"
   ],
   "files":[
-    "src/styles/styled.d.ts"
+    "src/Styles/styled.d.ts"
   ]
 }
