@@ -1,7 +1,6 @@
 import React from "react";
 import "./App.scss";
 import Routes from "./Routes";
-import ThemeSwitcher from "./components/ThemeSwitcher";
 import { ThemeProvider, DefaultTheme } from "styled-components";
 import light from "./Styles/Themes/light";
 import dark from "./Styles/Themes/dark";

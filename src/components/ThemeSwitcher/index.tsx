@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { Container } from "./styles";
 import Switch from "react-switch";
 import { ThemeContext } from "styled-components";
-import { shade } from "polished";
 
 interface Props {
   toggleTheme(): void;

@@ -3,8 +3,6 @@ import api from "../../../services/api";
 import { Link } from "react-router-dom";
 import { AiFillCaretLeft } from "react-icons/ai";
 import { Spinner, Button } from "react-bootstrap";
-import { DefaultTheme } from "styled-components";
-import ThemeSwitcher from "../../../components/ThemeSwitcher";
 
 interface Contato {
   idcontato: number;
