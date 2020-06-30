@@ -175,18 +175,6 @@ const EditEvento: React.FC = () => {
                 </select>
               </div>
             </div>
-            <div className="field-group">
-              <div className="field">
-                <label htmlFor="participantes">Participantes</label>
-                <input
-                  onChange={(text) => setQtdParticipantes(Number(text.currentTarget.value.trim()))}
-                  defaultValue={evento[0].qtdparticipantes}
-                  type="text"
-                  name="participantes"
-                  id="participantes"
-                />
-              </div>
-            </div>
             <div>
               <Button onClick={(e: React.FormEvent<Element>) => patchEvento(e)} variant="success">
                 Atualizar evento
