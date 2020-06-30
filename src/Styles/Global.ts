@@ -1,39 +1,27 @@
-:root {
-  --primary-color: #34cb79;
-  --title-color: #322153;
-  --text-color: #2c2b2b;
-}
+import { createGlobalStyle } from "styled-components";
 
-@import "~bootstrap/scss/bootstrap";
+export default createGlobalStyle`
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background: #f0f0f5;
-  -webkit-font-smoothing: antialiased;
-  color: var(--text-color);
-}
-
-body,
-input,
-button {
-  font-family: Roboto, Arial, Helvetica, sans-serif;
-}
-
-h1,
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    background: ${(props) => props.theme.colors.background_color};
+    -webkit-font-smoothing: antialiased;
+    color: ${(props) => props.theme.colors.text_color};
+  }
+  h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  color: var(--title-color);
+  color: ${(props) => props.theme.colors.title};
   font-family: Ubuntu;
 }
-
 #page-create-point {
   width: 100%;
   max-width: 1100px;
@@ -54,7 +42,7 @@ h6 {
 }
 
 #page-create-point header a {
-  color: var(--title-color);
+  color: ${(props) => props.theme.colors.title};
   font-weight: bold;
   text-decoration: none;
 
@@ -64,16 +52,15 @@ h6 {
 
 #page-create-point header a svg {
   margin-right: 16px;
-  color: var(--primary-color);
+  color: ${(props) => props.theme.colors.text_color};
 }
 
 #page-create-point form {
   margin: 80px auto;
   padding: 64px;
   max-width: 1200px;
-  background: #fff;
+  background: ${(props) => props.theme.colors.form_background};
   border-radius: 8px;
-
   display: flex;
   flex-direction: column;
 }
@@ -103,7 +90,7 @@ h6 {
 #page-create-point form legend span {
   font-size: 14px;
   font-weight: normal;
-  color: var(--text-color);
+  color: ${(props) => props.theme.colors.text_color};
 }
 
 #page-create-point form .field-group {
@@ -120,12 +107,12 @@ h6 {
 }
 #page-create-point form .field input[type="datetime-local"] {
   flex: 1;
-  background: #f0f0f5;
+  background: ${(props) => props.theme.colors.background_color};
   border-radius: 8px;
   border: 0;
   padding: 16px 24px;
   font-size: 16px;
-  color: #000000;
+  color: ${(props) => props.theme.colors.text_color};
   text-align: center;
 }
 
@@ -133,12 +120,12 @@ h6 {
 #page-create-point form .field input[type="email"],
 #page-create-point form .field input[type="number"] {
   flex: 1;
-  background: #f0f0f5;
+  background: ${(props) => props.theme.colors.background_color};
   border-radius: 8px;
   border: 0;
   padding: 16px 24px;
   font-size: 16px;
-  color: #000000;
+  color: ${(props) => props.theme.colors.text_color};
 }
 
 #page-create-point form .field select {
@@ -146,16 +133,16 @@ h6 {
   -moz-appearance: none;
   appearance: none;
   flex: 1;
-  background: #f0f0f5;
+  background: ${(props) => props.theme.colors.background_color};
   border-radius: 8px;
   border: 0;
   padding: 16px 24px;
   font-size: 16px;
-  color: #000000;
+  color: ${(props) => props.theme.colors.text_color};
 }
 
 #page-create-point form .field input::placeholder {
-  color: #000000;
+  color: ${(props) => props.theme.colors.text_color};
 }
 
 #page-create-point form .field label {
@@ -181,7 +168,7 @@ h6 {
 }
 
 #page-create-point form .field-check input[type="checkbox"] {
-  background: #f0f0f5;
+  background: ${(props) => props.theme.colors.background_color};
 }
 
 #page-create-point form .field-check label {
@@ -200,7 +187,7 @@ h6 {
   height: 56px;
   /* background: var(--primary-color); */
   border-radius: 8px;
-  color: #fff;
+  color: ${(props) => props.theme.colors.text_color};
   font-weight: bold;
   font-size: 16px;
   border: 0;
@@ -230,8 +217,8 @@ h6 {
 }
 
 .items-grid li {
-  background: #f5f5f5;
-  border: 2px solid #f5f5f5;
+  background: ${(props) => props.theme.colors.background_color};
+  border: 2px solid ${(props) => props.theme.colors.background_color};
   height: 180px;
   border-radius: 8px;
   padding: 32px 24px 16px;
@@ -252,11 +239,11 @@ h6 {
 
   display: flex;
   align-items: center;
-  color: var(--title-color);
+  color: ${(props) => props.theme.colors.text_color};
 }
 
 .items-grid li.selected {
-  background: #e1faec;
+  background: ${(props) => props.theme.colors.title};
   border: 2px solid #34cb79;
 }
 
@@ -285,3 +272,6 @@ button.themeSwitcher {
   height: 4rem;
   float: right;
 }
+
+  
+  `;

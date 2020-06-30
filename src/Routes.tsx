@@ -11,28 +11,55 @@ import EditContato from "./pages/Contatos/Edit";
 import EditLocal from "./pages/Locais/Edit";
 import EditTipoContato from "./pages/tipoContato/Edit";
 import EditParticipante from "./pages/Participantes/Edit";
+import { DefaultTheme } from "styled-components";
+interface Props {
+  theme: DefaultTheme;
+  toggleTheme(): void;
+}
 
-const Routes: React.FC = () => {
+const Routes: React.FC<Props> = ({theme, toggleTheme}) => {
   return (
     <BrowserRouter>
-      <Route component={Home} path="/" exact />
+      <Route path="/" exact >
+        <Home theme={theme} toggleTheme={toggleTheme}/>
+      </Route>
 
-      <Route component={ListContatos} path="/contatos/list" />
-      <Route component={EditContato} path="/contatos/edit/" />
+      <Route path="/contatos/list" >
+        <ListContatos/>
+      </Route>
+      <Route path="/contatos/edit/" >
+        <EditContato/>
+      </Route>
 
-      <Route component={ListEventos} path="/eventos/list"/>
-      <Route component={EditEvento} path="/eventos/edit/"/>
+      <Route path="/eventos/list">
+        <ListEventos/>
+      </Route>
+      <Route path="/eventos/edit/">
+        <EditEvento/>
+      </Route>
 
-      <Route component={ListLocais} path="/locais/list"/>
-      <Route component={EditLocal} path="/locais/edit/"/>
+      <Route path="/locais/list">
+        <ListLocais/>
+      </Route>
+      <Route path="/locais/edit/">
+        <EditLocal/>
+      </Route>
 
 
-      <Route component={ListTiposContato} path="/tiposContato/list"/>
-      <Route component={EditTipoContato} path="/tiposContato/edit/"/>
+      <Route path="/tiposContato/list">
+        <ListTiposContato/>
+      </Route>
+      <Route path="/tiposContato/edit/">
+        <EditTipoContato/>
+      </Route>
 
 
-      <Route component={ListParticipantes} path="/participantes/list"/>
-      <Route component={EditParticipante} path="/participantes/edit/"/>
+      <Route path="/participantes/list">
+        <ListParticipantes/>
+      </Route>
+      <Route path="/participantes/edit/">
+        <EditParticipante/>
+      </Route>
 
 
     </BrowserRouter>

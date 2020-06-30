@@ -3,7 +3,7 @@ import api from "../../../services/api";
 import { Link } from "react-router-dom";
 import { AiFillCaretLeft } from "react-icons/ai";
 import { Spinner } from "react-bootstrap";
-import Button from 'react-bootstrap/Button'
+import Button from "react-bootstrap/Button";
 
 interface Evento {
   idevento: number;
@@ -31,7 +31,6 @@ const ListEventos: React.FC = () => {
   const [nome, setNome] = useState("");
   const [dataHora, setDataHora] = useState("");
   const [idLocal, setIdLocal] = useState("");
-  const [qtdParticipantes, setQtdParticipantes] = useState("");
   const [locais, setLocal] = useState([] as Local[]);
   const date = new Date();
 
@@ -55,12 +54,10 @@ const ListEventos: React.FC = () => {
     if (dataHora === "") {
       return alert(`Escolha uma hora e data para o evento.`);
     }
-    if (idLocal === "" || idLocal==="nulo") {
+    if (idLocal === "" || idLocal === "nulo") {
       return alert(`Escolha um local!`);
     }
-    if (qtdParticipantes === "") {
-      return alert(`Defina uma quantidade de participantes!`);
-    }
+    const qtdParticipantes = 0;
     const response = await api.post("/evento", {
       nome,
       dataHora,
@@ -105,13 +102,15 @@ const ListEventos: React.FC = () => {
                     <tr key={evento.idevento}>
                       <th>{evento.nome}</th>
                       <th>{formatDate(evento.datahora)}</th>
-                      <th>{locais.map((local)=>(
-                          local.id === evento.idlocal ? (`${local.endereco} - ${local.numero}`) : null
-                      ))}</th>
+                      <th>
+                        {locais.map((local) =>
+                          local.id === evento.idlocal ? `${local.endereco} - ${local.numero}` : null
+                        )}
+                      </th>
                       <th>{evento.qtdparticipantes}</th>
                       <th>
                         <Link to={`/eventos/edit/?id=${evento.idevento}`}>
-                          <Button variant="danger" >Editar</Button>
+                          <Button variant="danger">Editar</Button>
                         </Link>
                       </th>
                     </tr>
@@ -135,47 +134,49 @@ const ListEventos: React.FC = () => {
         <br />
         <br />
         <div>
-        <h2>Cadastrar:</h2>
-        <br />
-        <br />
-        <div className="field-group">
-          <div className="field">
-            <label htmlFor="Nome">Nome do evento</label>
-            <input onChange={(text) => setNome(text.currentTarget.value.trim())} type="text" name="nome" id="nome" />
+          <h2>Cadastrar:</h2>
+          <br />
+          <br />
+          <div className="field-group">
+            <div className="field">
+              <label htmlFor="Nome">Nome do evento</label>
+              <input onChange={(text) => setNome(text.currentTarget.value.trim())} type="text" name="nome" id="nome" />
+            </div>
           </div>
-        </div>
-        <div className="field-group">
-          <div className="field">
-            <label htmlFor="data">Data / Hora</label>
-            <input onChange={(text) => setDataHora(text.currentTarget.value.trim())} type="datetime-local"
-            min={date.toISOString().substr(0, date.toISOString().length-8)}
-             pattern="[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}"
-             name="hora" id="hora" />
-          </div>
-          <div className="field">
-            <label htmlFor="Local">Local</label>
-            <select defaultValue="DEFAULT" onChange={(text) => setIdLocal(text.currentTarget.value.trim())} name="cidades" id="cidades">
-              <option key="DEFAULT" value="nulo">-- Escolha um local --</option>
-              {locais.map((local) => (
-                <option key={local.id} value={local.id}>
-                  {local.endereco}, {local.numero} - {local.cidade}/{local.estado}
+          <div className="field-group">
+            <div className="field">
+              <label htmlFor="data">Data / Hora</label>
+              <input
+                onChange={(text) => setDataHora(text.currentTarget.value.trim())}
+                type="datetime-local"
+                min={date.toISOString().substr(0, date.toISOString().length - 8)}
+                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}"
+                name="hora"
+                id="hora"
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="Local">Local</label>
+              <select
+                defaultValue="DEFAULT"
+                onChange={(text) => setIdLocal(text.currentTarget.value.trim())}
+                name="cidades"
+                id="cidades"
+              >
+                <option key="DEFAULT" value="nulo">
+                  -- Escolha um local --
                 </option>
-              ))}
-            </select>
+                {locais.map((local) => (
+                  <option key={local.id} value={local.id}>
+                    {local.endereco}, {local.numero} - {local.cidade}/{local.estado}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        </div>
-        <div className="field-group">
-          <div className="field">
-            <label htmlFor="participantes">Participantes</label>
-            <input
-              onChange={(text) => setQtdParticipantes(text.currentTarget.value.trim())}
-              type="text"
-              name="participantes"
-              id="participantes"
-            />
-          </div>
-        </div>
-        <Button variant="success" onClick={(e: React.FormEvent<Element>) => insertEvento(e)}>Cadastrar</Button>
+          <Button variant="success" onClick={(e: React.FormEvent<Element>) => insertEvento(e)}>
+            Cadastrar
+          </Button>
         </div>
       </form>
     </div>
