@@ -13,7 +13,7 @@
     "@types/styled-components": "^5.1.0",
     "axios": "^0.21.2",
     "bootstrap": "^4.5.0",
-    "node-sass": "^7.0.3",
+    "node-sass": "^9.0.0",
     "polished": "^3.6.5",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
